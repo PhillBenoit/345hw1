@@ -76,7 +76,7 @@ public class VICData {
         }
 
         try {
-            long idValue = Long.parseLong(vic.agentID);
+            Long.parseLong(vic.agentID);
         } catch (NumberFormatException e) {
               System.out.println("Agent ID `" + vic.agentID 
                                + "contains non-numeric characters!\n");
@@ -100,7 +100,7 @@ public class VICData {
         }
 
         try {
-            long dateValue = Long.parseLong(vic.date);
+            Long.parseLong(vic.date);
         } catch (NumberFormatException e) {
               System.out.println("Date `" + vic.date 
                                + "contains non-numeric characters!\n");
