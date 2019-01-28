@@ -162,7 +162,13 @@ public class VICData {
 
         int numLetters = 0;
         for (int i = 0; i < vic.anagram.length(); i++) {
-            if (Character.isLetter(vic.anagram.charAt(i))) {
+            char testChar = vic.anagram.charAt(i);
+            //Added anagram restriction
+            if (testChar == 'Z' || testChar == 'Q' || testChar == 'X') {
+                System.out.printf("ERROR:  Anagram cannot contain Q, Z or X.\n");
+                System.exit(1);
+            }
+            if (Character.isLetter(testChar)) {
                 numLetters++;
             }
         }
@@ -308,7 +314,14 @@ public class VICData {
 
         int numLetters = 0;
         for (int i = 0; i < vic.anagram.length(); i++) {
-            if (Character.isLetter(vic.anagram.charAt(i))) {
+            char testChar = vic.anagram.charAt(i);
+            
+            //Added anagram restriction
+            if (testChar == 'Z' || testChar == 'Q' || testChar == 'X') {
+                System.out.printf("ERROR:  Anagram cannot contain Q, Z or X.\n");
+                System.exit(1);
+            }
+            if (Character.isLetter(testChar)) {
                 numLetters++;
             }
         }

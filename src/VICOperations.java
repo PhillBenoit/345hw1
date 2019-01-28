@@ -75,22 +75,21 @@ public class VICOperations {
     public static String digitPermutation(String s) {
 
         //reject strings that are too small
-        if (s.length() < 10) return null;
+        if (s.length() < VICData.PHRASE_LEN) return null;
 
         s = s.toUpperCase();
         int counter = 0;
-        char[] returnString = new char[10];
+        char[] returnString = new char[VICData.PHRASE_LEN];
 
         //convert numbers to letters
-        int test = charToInt(s.charAt(0));
-        if (test < 10)
+        if (s.charAt(0) < ':')
             for(char number = '0'; number < ':'; number++)
                 s=s.replace(number, (char)(number+17));
 
         //step through each letter in the alphabet and the string to create the key
-        for (char letterStep = 'A'; letterStep <= 'Z' && counter < 10;
-                letterStep++)
-            for (int stringStep = 0; stringStep < 10; stringStep++)
+        for (char letterStep = 'A'; letterStep <= 'Z' &&
+                counter < VICData.PHRASE_LEN; letterStep++)
+            for (int stringStep = 0; stringStep < VICData.PHRASE_LEN; stringStep++)
                 if (letterStep == s.charAt(stringStep))
                     returnString[stringStep] = intToChar(counter++);
 
@@ -100,42 +99,43 @@ public class VICOperations {
     /**
      * Create a cypher using a base message and a numeric key
      * 
-     * @param message base message for the table
+     * @param anagram base message for the table
      * @param key numeric order for the columns
      * @return list of values for every letter or null on bad input
      */
-    public static ArrayList<String> straddlingCheckerboard (String message, String key){
+    public static ArrayList<String> straddlingCheckerboard (String anagram, String key){
 
-        //reject messages and keys of improper lengths
-        if (message.length() != 10 || key.length() != 10) return null;
+        //reject anagrams and keys of improper lengths
+        if (anagram.length() != VICData.ANAGRAM_LEN || key.length() !=
+                VICData.ANAGRAM_LEN) return null;
 
-        message = message.toUpperCase();
-        String[] return_array = new String[28];
-        Integer[] column_order = new Integer[10];
-        Integer[] row_order = new Integer[10];
+        anagram = anagram.toUpperCase();
+        String[] return_array = new String[26];
+        Integer[] column_order = new Integer[VICData.ANAGRAM_LEN];
+        Integer[] row_order = new Integer[VICData.ANAGRAM_LEN];
 
         //counting variables to check for validity
         int space_counter = 0;
         boolean[] digit_counter = new boolean[10];
 
-        for (int step = 0; step < 10; step++) {
+        for (int step = 0; step < VICData.ANAGRAM_LEN; step++) {
 
             //assign and record key values
             column_order[step] = charToInt(key.charAt(step));
             digit_counter[column_order[step]] = true;
 
-            //set base message into the cypher while counting and recording spaces
-            char letter = message.charAt(step);
+            //set anagram into the cypher while counting and recording spaces
+            char letter = anagram.charAt(step);
             if (letter == ' ') row_order[space_counter++] = column_order[step];
             else if (return_array[letter - 'A'] == null) return_array[letter - 'A']
                     = column_order[step].toString();
 
-            //reject base messages that repeat letters
+            //reject anagrams that repeat letters
             else return null;
         }
 
         //reject messages with wrong number of spaces
-        if (space_counter != 2) return null;
+        if (space_counter != VICData.ANAGRAM_LEN-VICData.ANAGRAM_LETTERS) return null;
 
         //reject keys that do not use each digit 0-9 only once
         for (boolean value:digit_counter) if (!value) return null;
@@ -155,13 +155,14 @@ public class VICOperations {
             }
         }
 
-        //add column indexes as last elements
-        return_array[26] = row_order[0].toString();
-        return_array[27] = row_order[1].toString();
-
         //convert array to arraylist
         ArrayList<String> list = new ArrayList<>();
         for (String element:return_array) list.add(element);
+
+        //add column indexes as last elements
+        list.add(row_order[0].toString());
+        list.add(row_order[1].toString());
+
         return list;
     }
 
@@ -174,7 +175,8 @@ public class VICOperations {
     public static String formatString(String s) {
         s = s.toUpperCase();
         StringBuilder returnString = new StringBuilder();
-        for (char letter:s.toCharArray()) if (letter >= 'A' && letter <= 'Z') returnString.append(letter);
+        for (char letter:s.toCharArray()) if (letter >= 'A' && letter <= 'Z')
+            returnString.append(letter);
         return returnString.toString();
     }
 
@@ -202,14 +204,14 @@ public class VICOperations {
     public static String decodeString(String s, ArrayList<String> cypher) {
         StringBuilder returnString = new StringBuilder();
 
+        //read VIC row indexes
+        char first_row = cypher.get(cypher.size()-2).charAt(0),
+                second_row = cypher.get(cypher.size()-1).charAt(0);
+
         for (int step = 0; step < s.length(); step++) {
             String letter = "";
 
-            //read VIC row indexes
-            char first_row = cypher.get(26).charAt(0),
-                    second_row = cypher.get(27).charAt(0);
-
-            //test for row numbers
+            //test for and read row numbers
             if (s.charAt(step) == first_row || s.charAt(step) == second_row)
                 letter = letter + s.charAt(step++);
 
@@ -242,26 +244,26 @@ public class VICOperations {
      * @param data VICData to modify
      */
     public static void removeString(VICData data) {
-        int index = charToInt(data.date.charAt(5));
+        int index = charToInt(data.date.charAt(VICData.DATE_LEN-1));
 
         //extract ID
-        data.agentID = data.message.substring(index, index+5);
+        data.agentID = data.message.substring(index, index+VICData.ID_LEN);
 
         //resize message
         data.message = data.message.substring(0, index) +
-                data.message.substring(index+5);
+                data.message.substring(index+VICData.ID_LEN);
     }
 
     /**
      * Use VICData to generate a cypher
      * (steps 1-6 from the spec)
      * 
-     * @param data data to read
+     * @param data VICData to read
      * @return cypher
      */
     public static ArrayList<String> buildCypher(VICData data) {
-        String output = VICOperations.noCarryAddition(data.agentID, data.date.substring(0, 5));
-        output = VICOperations.chainAddition(output, 10);
+        String output = VICOperations.noCarryAddition(data.agentID, data.date.substring(0, VICData.DATE_LEN-1));
+        output = VICOperations.chainAddition(output, VICData.ANAGRAM_LEN);
         data.phrase = VICOperations.digitPermutation(data.phrase);
         output = VICOperations.noCarryAddition(output, data.phrase);
         output = VICOperations.digitPermutation(output);

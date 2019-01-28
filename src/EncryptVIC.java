@@ -38,7 +38,8 @@ public class EncryptVIC {
 
         //steps 7-8
         output = VICOperations.encodeString(data.message, cypher);
-        output = VICOperations.insertString(output, data.agentID, data.date.charAt(5));
+        output = VICOperations.insertString(output, data.agentID,
+                data.date.charAt(VICData.DATE_LEN-1));
 
         return output;        
     }
