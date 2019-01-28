@@ -7,36 +7,36 @@ public class Tests {
     public static void main(String[] args) {
         assertEquals("15", VICOperations.noCarryAddition("7", "18"));
         assertEquals("412", VICOperations.noCarryAddition("359","163"));
-        
+
         assertEquals("640", VICOperations.chainAddition("64", 3));
         assertEquals("76238513", VICOperations.chainAddition("762", 8));
         assertEquals("77415", VICOperations.chainAddition("7", 5));
         assertEquals("54", VICOperations.chainAddition("54321", 2));
         assertEquals("5", VICOperations.chainAddition("54321", 1));
-                
+
         assertNull(VICOperations.digitPermutation("hi"));
         assertEquals("4071826395", VICOperations.digitPermutation("BANANALAND"));
         assertEquals("6704821539", VICOperations.digitPermutation("STARTEARLY"));
-        
+
         ArrayList<String> test_list;
-        
+
         //improper length
         test_list = VICOperations.straddlingCheckerboard("a", "4071826395");
         assertNull(test_list);
-        
+
         test_list = VICOperations.straddlingCheckerboard("a tin shoe", "4");
         assertNull(test_list);
 
         test_list = VICOperations.straddlingCheckerboard("a tin shoes", "4071826395");
         assertNull(test_list);
-        
+
         test_list = VICOperations.straddlingCheckerboard("a tin shoe", "444071826395");
         assertNull(test_list);
-        
+
         //repeat numbers
         test_list = VICOperations.straddlingCheckerboard("a tin shoe", "1111111111");
         assertNull(test_list);
-        
+
         //repeat letters
         test_list = VICOperations.straddlingCheckerboard("aaa aa aaa", "4071826395");
         assertNull(test_list);
@@ -44,10 +44,10 @@ public class Tests {
         //improper number of spaces
         test_list = VICOperations.straddlingCheckerboard("a t n shoe", "4071826395");
         assertNull(test_list);
-        
+
         test_list = VICOperations.straddlingCheckerboard("a tinshoes", "4071826395");
         assertNull(test_list);
-        
+
         //full list test
         test_list = VICOperations.straddlingCheckerboard("a tin shoe", "4071826395");
         assertEquals("4", test_list.get(0));
@@ -76,29 +76,29 @@ public class Tests {
         assertEquals("22", test_list.get(23));
         assertEquals("26", test_list.get(24));
         assertEquals("23", test_list.get(25));
-        
+
         VICData data = new VICData();
-        
+
         data.agentID = "85721";
         data.date = "470918";
         data.phraseOriginal = "Choose the representation that best supports the operations";
         data.anagram = "heat is on";
         data.messageOriginal = "Run away!";
         assertEquals("3532423085721239", EncryptVIC.encrypt(data));
-        
+
         data.agentID = "73003";
         data.date = "450508";
         data.phraseOriginal = "Don't do drugs";
         data.anagram = "A ROSE TIN";
         data.messageOriginal = "Send money.";
         assertEquals("67835384730038700", EncryptVIC.encrypt(data));
-        
+
         data.date = "470918";
         data.phraseOriginal = "Choose the representation that best supports the operations";
         data.anagram = "heat is on";
         data.message = "815052098572156920365";
         assertEquals("THECAKEISALIE", DecryptVIC.decrypt(data));
-        
+
         data.message = "62072357857210178";
         assertEquals("IAMAROBOT", DecryptVIC.decrypt(data));
 

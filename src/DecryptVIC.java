@@ -1,5 +1,11 @@
 import java.util.ArrayList;
 
+/**
+ * Decrypt VICData
+ * 
+ * @author Phillip Benoit
+ *
+ */
 public class DecryptVIC {
 
     /**
@@ -15,9 +21,10 @@ public class DecryptVIC {
         }
         System.out.println(decrypt(VICData.readVICDrcryptData(args[0])));
     }
-    
+
     /**
-     * Decrypt VICData
+     * Runs all steps for decryption
+     * 
      * @param data VICData to decrypt
      * @return decrypted message
      */
@@ -25,9 +32,9 @@ public class DecryptVIC {
         String output = new String();
         data.phrase = VICOperations.formatString(data.phraseOriginal).substring(0, VICData.PHRASE_LEN);
         VICOperations.removeString(data);
-        
+
         ArrayList<String> cypher = VICOperations.buildCypher(data);
-        
+
         output = VICOperations.decodeString(data.message, cypher);
 
         return output;        

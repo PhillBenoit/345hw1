@@ -226,7 +226,7 @@ public class VICData {
             System.out.println("File does not exist: " + pathName + "!\n");
             System.exit(1);
         }
-        
+
         //removed agentID from read lines
 
         // Read and sanity-check date.  Needs to be DATE_LEN long
@@ -346,10 +346,10 @@ public class VICData {
 
         //extra parse int check
         try {
-            
+
             //break down string in to 8 digit segments
             int eight_digit_segments = (vic.message.length() / 8) * 8;
-            
+
             //try to parse all segments
             for (int step = 0; step < eight_digit_segments; step+=8) {
                 Integer.parseInt(vic.message.substring(step, step+8));
